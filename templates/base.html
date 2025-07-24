@@ -1,0 +1,183 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CaseEase</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding-top: 80px;
+        }
+
+        nav {
+            background-color: #6A0DAD;
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-section img {
+            height: 45px;
+            margin-right: 12px;
+        }
+
+        .logo-section span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-right {
+            position: relative;
+        }
+
+        .nav-right a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .nav-right img {
+            height: 48px;
+            width: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 2px solid white;
+        }
+
+        #userDropdown {
+            position: absolute;
+            background: white;
+            color: black;
+            margin-top: 8px;
+            right: 0;
+            display: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 140px;
+        }
+
+        #userDropdown a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: black;
+        }
+
+        #userDropdown a:hover {
+            background-color: #f7f7f7;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .nav-right > div:hover,
+        .nav-right a:hover {
+            opacity: 0.85;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+    <a href="" class="logo-section">
+        <img src="{% static 'images/CMS-logo.png' %}" alt="Logo">
+        <span>CaseEase</span>
+    </a>
+
+    <!-- Right Side -->
+    <div class="nav-right">
+        {% if request.resolver_match.url_name == "home" %}
+            <a href="{% url 'login' %}">
+                <img src="{% static 'images/avatar.png' %}" alt="Avatar">
+                Login
+            </a>
+        {% elif request.user.is_authenticated %}
+            <div onclick="toggleMenu()" style="cursor: pointer;">
+                <span style="color: white; font-size: 20px; margin-right: 10px; position: relative; top: -14px;">{{ request.user.username }}</span>
+                {% if request.user.profile_image %}
+                    <img src="{{ request.user.profile_image.url }}" alt="Avatar">
+                {% else %}
+                    <img src="{% static 'images/avatar.png' %}" alt="Avatar">
+                {% endif %}
+            
+            </div>
+            <div id="userDropdown">
+                {% if user.is_authenticated %}
+                    {% if user.is_superuser %}
+                        <a href="{% url 'view_profile' %}">View Profile</a>
+                    {% elif user.groups.all.0.name == 'handler' %}
+                        <a href="{% url 'view_handler_profile' %}">View Profile</a>
+                    {% else %}
+                        <a href="{% url 'view_user_profile' %}">View Profile</a>
+                    {% endif %}
+                {% endif %}
+
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        {% else %}
+            <a href="{% url 'login' %}">
+                <img src="{% static 'images/avatar.png' %}" alt="Avatar">
+                Login
+            </a>
+        {% endif %}
+    </div>
+
+</nav>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById("userDropdown");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.nav-right')) {
+            document.getElementById("userDropdown").style.display = "none";
+        }
+    }
+</script>
+
+<div class="main-content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+
+</html>

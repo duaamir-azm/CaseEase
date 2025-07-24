@@ -1,0 +1,369 @@
+
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body {
+    background: #f4f6f9;
+}
+.dashboard-container {
+    display: flex;
+    align-items: stretch;
+    min-height: 100vh;
+    margin: 0;
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    position: fixed;
+}
+.admin-sidebar {
+    width: 260px;
+    background: #343a40;
+    color: #fff;
+    border-radius: 14px 0 0 14px;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 0;
+    margin-top: 0;
+    min-height: 100%;
+    position: relative;
+}
+.admin-sidebar .user-panel {
+    display: flex;
+    align-items: center;
+    padding: 24px 20px 16px 20px;
+    border-bottom: 1px solid #495057;
+}
+.admin-sidebar .user-panel img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 2px solid #6f42c1;
+}
+.admin-sidebar .user-panel .info {
+    display: flex;
+    flex-direction: column;
+}
+.admin-sidebar .user-panel .info span {
+    font-weight: 700;
+    font-size: 1.1em;
+}
+.admin-sidebar .user-panel .info small {
+    color: #bdbdbd;
+    font-size: 0.9em;
+}
+.admin-sidebar nav {
+    flex: 1;
+    padding: 20px 0 0 0;
+}
+.admin-sidebar ul {
+    list-style: none;
+    padding: 0 0 0 0;
+    margin: 0;
+}
+.admin-sidebar li {
+    margin-bottom: 6px;
+}
+.admin-sidebar a {
+    color: #c2c7d0;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 28px;
+    font-size: 1.05em;
+    border-left: 4px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+}
+.admin-sidebar a.active, .admin-sidebar a:hover {
+    background: #23272b;
+    color: #fff;
+    border-left: 4px solid #6f42c1;
+}
+.admin-sidebar a i {
+    margin-right: 12px;
+    font-size: 1.2em;
+}
+.admin-sidebar .sidebar-footer {
+    padding: 18px 20px;
+    border-top: 1px solid #495057;
+    font-size: 0.95em;
+    color: #bdbdbd;
+}
+.main-section {
+    flex: 1;
+    background: #fff;
+    padding: 40px 44px 40px 44px;
+    border-radius: 0 14px 14px 0;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    min-height: 100vh;
+    min-width: 0;
+    margin-top: 60px;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+.dashboard-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 22px 18px 18px 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-left: 5px solid #6f42c1;
+}
+.dashboard-card .icon {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    color: #6f42c1;
+}
+.dashboard-card .value {
+    font-size: 1.7em;
+    font-weight: 700;
+    color: #343a40;
+}
+.dashboard-card .label {
+    color: #6c757d;
+    font-size: 1em;
+    margin-top: 2px;
+}
+.dashboard-graph {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 24px 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    margin-bottom: 32px;
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.dashboard-graph-img {
+    flex: 2 1 350px;
+    min-width: 250px;
+    max-width: 600px;
+}
+.dashboard-graph-goals {
+    flex: 1 1 220px;
+    min-width: 200px;
+    max-width: 350px;
+    margin-top: 0;
+}
+.goal-completion {
+    margin-top: 18px;
+}
+.goal-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.goal-label {
+    flex: 1;
+    color: #343a40;
+    font-size: 1em;
+}
+.goal-bar {
+    flex: 2;
+    height: 10px;
+    border-radius: 5px;
+    margin-left: 12px;
+    background: #e9ecef;
+    overflow: hidden;
+}
+.goal-bar-inner {
+    height: 100%;
+    border-radius: 5px;
+}
+.goal-bar-inner.blue { background: #007bff; }
+.goal-bar-inner.red { background: #dc3545; }
+.goal-bar-inner.green { background: #28a745; }
+.goal-bar-inner.orange { background: #fd7e14; }
+@media (max-width: 1100px) {
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 900px) {
+    .dashboard-container {
+        flex-direction: column;
+        max-width: 100vw;
+        margin: 0;
+    }
+    .admin-sidebar {
+        width: 100vw;
+        border-radius: 14px 14px 0 0;
+        min-height: unset;
+        position: static;
+        height: auto;
+    }
+    .main-section {
+        border-radius: 0 0 14px 14px;
+        padding: 24px 8vw;
+        margin-left: 0;
+        min-height: 60vh;
+    }
+}
+@media (max-width: 700px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+    .main-section {
+        padding: 18px 2vw;
+    }
+}
+</style>
+
+<div class="dashboard-container">
+    {% include 'accounts/admin_sidebar.html' %}
+    <section class="main-section">
+    <div class="dashboard-cards">
+      <div class="dashboard-card">
+        <div class="icon" style="color:#6f42c1"><i class="fa fa-briefcase"></i></div>
+        <div class="value">{{total_cases}}</div>
+        <div class="label">Total Cases</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="icon" style="color:#fd7e14"><i class="fa fa-hourglass-half"></i></div>
+        <div class="value">{{pending_cases}}</div>
+        <div class="label">Pending Cases</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="icon" style="color:#007bff"><i class="fa fa-spinner"></i></div>
+        <div class="value">{{assigned_cases}}</div>
+        <div class="label">Ongoing Cases</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="icon" style="color:#28a745"><i class="fa fa-check-circle"></i></div>
+        <div class="value">{{closed_cases}}</div>
+        <div class="label">Closed Cases</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="icon" style="color:#dc3545"><i class="fa fa-user-cog"></i></div>
+        <div class="value">{{handlers_count}}</div>
+        <div class="label">Handlers</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="icon" style="color:#343a40"><i class="fa fa-users"></i></div>
+        <div class="value">{{users_count}}</div>
+        <div class="label">Users</div>
+      </div>
+    </div>
+    <div class="dashboard-graph">
+      <div class="dashboard-graph-img">
+        <h3 style="margin-bottom:18px; font-size:1.5em; color:#6f42c1; font-weight:800; letter-spacing:0.5px;">Recap Report</h3>
+        <canvas id="casesPerDayChart" style="width:100%;height:180px;max-height:220px;background:#fff;border-radius:6px;"></canvas>
+      <!-- Chart label below the chart -->
+      <div style="text-align:center; margin-top:8px; font-weight:600; color:#383341; letter-spacing:0.5px; font-size:1.08em;">Cases Registered Per Day</div>
+      </div>
+      <div class="dashboard-graph-goals" style="width:100%; max-width:420px; min-width:260px; margin-right:10px;">
+        <div class="dashboard-card" style="padding: 28px 22px 22px 22px; box-shadow: 0 1px 8px rgba(111,66,193,0.10); width:100%;">
+          <style>
+            .dashboard-card .goal-row { width: 100%; }
+            .dashboard-card .goal-label { flex: 1.2; min-width: 110px; }
+            .dashboard-card .goal-bar { flex: 4; min-width: 120px; margin-left: 18px; margin-right: 18px; }
+            .dashboard-card .goal-row span { flex: 1; min-width: 60px; text-align: left; }
+          </style>
+          <h4 style="margin:0 0 18px 0; font-size:1.35em; color:#6f42c1; font-weight:800; letter-spacing:0.5px;">Goal Completion</h4>
+          <div class="goal-row">
+            <span class="goal-label">Pending Cases</span>
+            <div class="goal-bar">
+              <div class="goal-bar-inner" data-bar-style="width:{{pending_percent}}%; background:#fd7e14;"></div>
+            </div>
+            <span style="margin-left:0;font-size:0.95em;">{{pending_cases}}/{{total_cases}}</span>
+          </div>
+          <div class="goal-row">
+            <span class="goal-label">Approved Cases</span>
+            <div class="goal-bar">
+              <div class="goal-bar-inner" data-bar-style="width:{{approved_percent}}%; background:#007bff;"></div>
+            </div>
+            <span style="margin-left:0;font-size:0.95em;">{{approved_cases}}/{{total_cases}}</span>
+          </div>
+          <div class="goal-row">
+            <span class="goal-label">Ongoing Cases</span>
+            <div class="goal-bar">
+              <div class="goal-bar-inner" data-bar-style="width:{{assigned_percent}}%; background:#28a745;"></div>
+            </div>
+            <span style="margin-left:0;font-size:0.95em;">{{assigned_cases}}/{{total_cases}}</span>
+          </div>
+          <div class="goal-row">
+            <span class="goal-label">Closed Cases</span>
+            <div class="goal-bar">
+              <div class="goal-bar-inner" data-bar-style="width:{{closed_percent}}%; background:#dc3545;"></div>
+            </div>
+            <span style="margin-left:0;font-size:0.95em;">{{closed_cases}}/{{total_cases}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Chart.js for Cases Registered Per Day -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // User icon dropdown for logout
+      document.addEventListener('DOMContentLoaded', function() {
+        var userIcon = document.getElementById('userIcon');
+        var dropdown = document.getElementById('logoutDropdown');
+        if(userIcon && dropdown) {
+          userIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+          });
+          document.addEventListener('click', function(e) {
+            if(dropdown.style.display === 'block') dropdown.style.display = 'none';
+          });
+        }
+      });
+      // ignore these red ine cuz it shows chart
+      var casesPerDayLabels = {{ cases_per_day_labels|safe }};
+      var casesPerDayData = {{ cases_per_day_data|safe }};
+      
+      var ctx = document.getElementById('casesPerDayChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: casesPerDayLabels,
+          datasets: [{
+            label: 'Cases Registered',
+            data: casesPerDayData,
+            borderColor: '#6f42c1',
+            backgroundColor: 'rgba(111,66,193,0.08)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+            pointBackgroundColor: '#6f42c1',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+          },
+          scales: {
+            x: { grid: { display: false } },
+            y: { beginAtZero: true, grid: { color: '#eee' } }
+          }
+        }
+      });
+    </script>
+    <script>
+      document.querySelectorAll('.goal-bar-inner[data-bar-style]').forEach(function(el) {
+        var style = el.getAttribute('data-bar-style');
+        if (style) el.setAttribute('style', style);
+      });
+    </script>
+  </section>
+</div>
+{% endblock %}

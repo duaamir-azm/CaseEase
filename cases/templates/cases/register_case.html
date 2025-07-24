@@ -1,0 +1,361 @@
+
+{% load static %}
+{% load humanize %}
+{% block content %}
+<style>
+  body {
+    background: #f4f6f9;
+  }
+  .dashboard-container {
+    display: flex;
+    align-items: stretch;
+    min-height: 100vh;
+    margin: 0;
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    /* Remove position: fixed to allow scrolling */
+    height: 100vh;
+    overflow: auto;
+  }
+  .admin-sidebar {
+    width: 260px;
+    background: #343a40;
+    color: #fff;
+    border-radius: 14px 0 0 14px;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
+    position: relative;
+    z-index: 2;
+  }
+  .main-section {
+    flex: 1;
+    background: #fff;
+    padding: 40px 44px 40px 44px;
+    border-radius: 0 14px 14px 0;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    min-height: 100vh;
+    min-width: 0;
+    margin-top: 50px;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #343a40;
+    /* Remove overflow-y: auto to allow page scroll */
+  }
+  .main-section h2 {
+        text-align: center;
+        color: #6A0DAD;
+        margin-bottom: 20px;
+    }
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+  }
+  .card {
+    background: #fff;
+    border-left: 6px solid #6A0DAD;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(106,13,173,0.08), 0 1.5px 4px 0 rgba(106,13,173,0.07);
+    padding: 22px 20px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 1.5px solid #e4d6fa;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .card:hover {
+    box-shadow: 0 8px 32px 0 rgba(106,13,173,0.13), 0 2px 8px 0 rgba(106,13,173,0.10);
+    transform: translateY(-2px) scale(1.012);
+    border-left: 6px solid #4B0082;
+  }
+  .card h4, .card a {
+    margin: 0 0 6px 0;
+    color: #6A0DAD;
+    font-size: 1.13em;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    transition: color 0.2s;
+    word-break: break-word;
+  }
+  .card a:hover {
+    color: #4B0082;
+    text-decoration: underline;
+  }
+  .card p {
+    margin: 6px 0 4px 0;
+    color: #3a3350;
+    font-size: 1em;
+  }
+  .card small {
+    color: #8a7bbd;
+    font-size: 0.97em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  @media (max-width: 1100px) {
+    .cases-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 700px) {
+    .cases-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .dropdown {
+    margin-bottom: 25px;
+  }
+  .dropdown label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .dropdown input[type="text"] {
+    width: 100%;
+    padding: 7px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+  @media (max-width: 1100px) {
+    .main-section {
+      padding: 24px 8vw;
+    }
+  }
+  @media (max-width: 900px) {
+    .dashboard-container {
+      flex-direction: column;
+      max-width: 100vw;
+      margin: 0;
+      position: static;
+    }
+    .admin-sidebar {
+      width: 100vw;
+      border-radius: 14px 14px 0 0;
+      min-height: unset;
+      position: static;
+      height: auto;
+    }
+    .main-section {
+      border-radius: 0 0 14px 14px;
+      padding: 24px 8vw;
+      margin-left: 0;
+      min-height: 60vh;
+    }
+  }
+  @media (max-width: 700px) {
+    .main-section {
+      padding: 18px 2vw;
+    }
+  }
+  .main-section label {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-bottom: 5px;
+        margin-top: 15px;
+    }
+
+    .main-section input,
+    .main-section textarea,
+    .main-section select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+
+    .main-section input[type="checkbox"] {
+        width: auto;
+        margin-right: 5px;
+    }
+
+    .main-section button {
+        width: 100%;
+        padding: 12px;
+        background-color: #6A0DAD;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .main-section button:hover {
+        background-color: #4B0082;
+    }
+</style>
+
+<div>
+  {% include 'accounts/user_sidebar.html' %}
+  <div class="main-section">
+    <h2>Register a new Case</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_title">Case Title</label>
+        {{ form.title }}
+
+        <label for="id_description">Description</label>
+        {{ form.description }}
+
+        <label for="id_location">Location</label>
+        {{ form.location }}
+
+        <label for="id_incident_date">Incident Date</label>
+        {{ form.incident_date }}
+
+        <label for="id_uploaded_file">Attach File (optional)</label>
+        {{ form.uploaded_file }}
+
+        <label for="id_is_anonymous">
+            {{ form.is_anonymous }} Report Anonymously
+        </label>
+
+        <label for="id_suspect_name">Suspect Name (if any)</label>
+        {{ form.suspect_name }}
+
+        <label for="id_witnesses">Witnesses (if any)</label>
+        {{ form.witnesses }}
+
+        <button type="submit">Submit Case</button>
+    </form>
+
+
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{% comment %} 
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .case-register-container {
+        max-width: 700px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(106, 13, 173, 0.2);
+    }
+
+    .case-register-container h2 {
+        text-align: center;
+        color: #6A0DAD;
+        margin-bottom: 20px;
+    }
+
+    .case-register-container label {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-bottom: 5px;
+        margin-top: 15px;
+    }
+
+    .case-register-container input,
+    .case-register-container textarea,
+    .case-register-container select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+
+    .case-register-container input[type="checkbox"] {
+        width: auto;
+        margin-right: 5px;
+    }
+
+    .case-register-container button {
+        width: 100%;
+        padding: 12px;
+        background-color: #6A0DAD;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .case-register-container button:hover {
+        background-color: #4B0082;
+    }
+</style>
+
+<div class="case-register-container">
+    <div style="margin: 20px;">
+    <a href="{% url 'user_dashboard' %}" style="text-decoration: none; color: #6A0DAD; font-weight: bold;">
+        ← Back to Dashboard
+    </a>
+    </div>
+    <h2>Register New Case</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_title">Case Title</label>
+        {{ form.title }}
+
+        <label for="id_description">Description</label>
+        {{ form.description }}
+
+        <label for="id_location">Location</label>
+        {{ form.location }}
+
+        <label for="id_incident_date">Incident Date</label>
+        {{ form.incident_date }}
+
+        <label for="id_uploaded_file">Attach File (optional)</label>
+        {{ form.uploaded_file }}
+
+        <label for="id_is_anonymous">
+            {{ form.is_anonymous }} Report Anonymously
+        </label>
+
+        <label for="id_suspect_name">Suspect Name (if any)</label>
+        {{ form.suspect_name }}
+
+        <label for="id_witnesses">Witnesses (if any)</label>
+        {{ form.witnesses }}
+
+        <button type="submit">Submit Case</button>
+    </form>
+</div>
+{% endblock %}
+
+
+<!-- <h2>Register New Case</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form> --> {% endcomment %}

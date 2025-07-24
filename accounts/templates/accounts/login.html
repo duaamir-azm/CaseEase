@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 80px auto;
+        padding: 40px;
+        background: #fff;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        border-radius: 12px;
+    }
+
+    .login-container h2 {
+        text-align: center;
+        color: #6A0DAD;
+        margin-bottom: 25px;
+    }
+
+    .login-container label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: #333;
+        text-align: left;
+    }
+
+    .login-container input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .login-container button {
+        width: 100%;
+        padding: 12px;
+        background-color: #6A0DAD;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .login-container p {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    .login-container a {
+        color: #6A0DAD;
+        text-decoration: none;
+    }
+
+    .login-container a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="login-container">
+    <h2>Login to CaseEase</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+
+    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+</div>
+{% endblock %}

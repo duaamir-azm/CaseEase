@@ -1,0 +1,469 @@
+{% load static %}
+{% load humanize %}
+{% block content %}
+<style>
+  body {
+    background: #f4f6f9;
+  }
+  .dashboard-container {
+    display: flex;
+    align-items: stretch;
+    min-height: 100vh;
+    margin: 0;
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    /* Remove position: fixed to allow scrolling */
+    height: 100vh;
+    overflow: auto;
+  }
+  .admin-sidebar {
+    width: 260px;
+    background: #343a40;
+    color: #fff;
+    border-radius: 14px 0 0 14px;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
+    position: relative;
+    z-index: 2;
+  }
+  .main-section {
+    flex: 1;
+    background: #fff;
+    padding: 40px 44px 40px 44px;
+    border-radius: 0 14px 14px 0;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    min-height: 100vh;
+    min-width: 0;
+    margin-top: 50px;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #343a40;
+    /* Remove overflow-y: auto to allow page scroll */
+  }
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+  }
+  .card {
+    background: #fff;
+    border-left: 6px solid #6A0DAD;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(106,13,173,0.08), 0 1.5px 4px 0 rgba(106,13,173,0.07);
+    padding: 22px 20px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 1.5px solid #e4d6fa;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .card:hover {
+    box-shadow: 0 8px 32px 0 rgba(106,13,173,0.13), 0 2px 8px 0 rgba(106,13,173,0.10);
+    transform: translateY(-2px) scale(1.012);
+    border-left: 6px solid #4B0082;
+  }
+  .card h4, .card a {
+    margin: 0 0 6px 0;
+    color: #6A0DAD;
+    font-size: 1.13em;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    transition: color 0.2s;
+    word-break: break-word;
+  }
+  .card a:hover {
+    color: #4B0082;
+    text-decoration: underline;
+  }
+  .card p {
+    margin: 6px 0 4px 0;
+    color: #3a3350;
+    font-size: 1em;
+  }
+  .card small {
+    color: #8a7bbd;
+    font-size: 0.97em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  @media (max-width: 1100px) {
+    .cases-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 700px) {
+    .cases-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .dropdown {
+    margin-bottom: 25px;
+  }
+  .dropdown label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .dropdown input[type="text"] {
+    width: 100%;
+    padding: 7px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+  @media (max-width: 1100px) {
+    .main-section {
+      padding: 24px 8vw;
+    }
+  }
+  @media (max-width: 900px) {
+    .dashboard-container {
+      flex-direction: column;
+      max-width: 100vw;
+      margin: 0;
+      position: static;
+    }
+    .admin-sidebar {
+      width: 100vw;
+      border-radius: 14px 14px 0 0;
+      min-height: unset;
+      position: static;
+      height: auto;
+    }
+    .main-section {
+      border-radius: 0 0 14px 14px;
+      padding: 24px 8vw;
+      margin-left: 0;
+      min-height: 60vh;
+    }
+  }
+  @media (max-width: 700px) {
+    .main-section {
+      padding: 18px 2vw;
+    }
+  }
+    .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 0 12px rgba(106, 13, 173, 0.1);
+        width: 48%;
+    }
+
+    .card h2, .card h3 {
+        color: #6A0DAD;
+        margin-bottom: 20px;
+    }
+
+    .card p {
+        margin-bottom: 10px;
+        color: #444;
+    }
+
+    .timeline-entry {
+        border-left: 3px solid #6A0DAD;
+        padding-left: 10px;
+        margin-bottom: 15px;
+    }
+
+    .back-btn {
+        margin-top: 20px;
+        color: black;
+        text-decoration: none;
+    }
+    .card-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 30px;
+      margin-top: 20px;
+      align-items: flex-start;
+    }
+
+    .card-left {
+      flex: 1 1 60%;
+      max-width: 60%;
+      min-width: 320px;
+      order: 1;
+    }
+
+    .card-right {
+      flex: 1 1 38%;
+      max-width: 38%;
+      min-width: 260px;
+      order: 2;
+      align-self: flex-start;
+    }
+
+    @media (max-width: 900px) {
+        .card-left,
+        .card-right {
+            flex: 1 1 100%;
+            max-width: 100%;
+        }
+    }
+
+
+
+
+  .chat-container {
+    /* Inherit card/card-left styles for consistent look */
+    margin-top: 30px;
+    margin-bottom: 30px;
+    gap: 10px;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .chat-container h3 {
+    color: #6A0DAD;
+    font-size: 1.13em;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .chat-box {
+    max-height: 400px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #e4d6fa;
+    margin-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f9f9f9;
+  }
+  .chat-box::-webkit-scrollbar {
+    width: 6px;
+  }
+  .chat-box::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+  }
+  .chat-message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .chat-input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .chat-message-input {
+    width: 100%;
+    border: 2px solid #6A0DAD;
+    border-radius: 14px;
+    padding: 10px 44px 10px 16px;
+    font-size: 1em;
+    outline: none;
+    background: #f8f9fa;
+    color: #343a40;
+    transition: border-color 0.2s;
+    resize: none;
+    min-height: 38px;
+    box-sizing: border-box;
+  }
+  .chat-message-input:focus {
+    border-color: #4B0082;
+  }
+  .chat-send-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6A0DAD;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+  .chat-send-btn:hover {
+    color: #4B0082;
+  }
+  .chat-file-wrapper {
+    width: 100%;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+  }
+
+
+</style>
+
+
+<div>
+{% if user.is_authenticated %}
+    {% if user.is_superuser %}
+        {% include 'accounts/admin_sidebar.html' %}
+    {% elif user.groups.all.0.name == 'handler' %}
+        {% include 'accounts/handler_sidebar.html' %}
+    {% else %}
+        {% include 'accounts/user_sidebar.html' %}
+    {% endif %}
+{% endif %}
+  
+  <div class="main-section">
+    <h2><a href="javascript:history.back()" class="back-btn">← </a>Case Detail</h2>
+    <div class="card-container">
+      <!-- Left: Case Detail -->
+      <div class="card card-left">
+          <h2>{{ case.title }}</h2>
+          <p><strong>Status:</strong> {{ case.status }}</p>
+          <p><strong>Description:</strong> {{ case.description }}</p>
+          <p><strong>Location:</strong> {{ case.location }}</p>
+          <p><strong>Incident Date:</strong> {{ case.incident_date }}</p>
+          <p><strong>Suspect:</strong> {{ case.suspect_name }}</p>
+          <p><strong>Witnesses:</strong> {{ case.witnesses }}</p>
+
+          {% if case.uploaded_file %}
+              <p><strong>Attached File:</strong>
+                  <a href="{{ case.uploaded_file.url }}" target="_blank">Open</a> |
+                  <a href="{{ case.uploaded_file.url }}" download>Download</a>
+              </p>
+          {% endif %}
+
+          <p><strong>Reported By:</strong>
+              {% if case.is_anonymous %} Anonymous {% else %} {{ case.created_by.username }} {% endif %}
+          </p>
+
+          {% if case.assigned_to %}
+              <p><strong>Assigned To:</strong> {{ case.assigned_to.username }}</p>
+          {% endif %}
+
+          {% if case.progress_notes %}
+              <p><strong>Progress Notes:</strong> {{ case.progress_notes }}</p>
+          {% endif %}
+
+          {% if case.report_file %}
+              <p><strong>Report File:</strong>
+                  <a href="{{ case.report_file.url }}" target="_blank">Open</a> |
+                  <a href="{{ case.report_file.url }}" download>Download</a>
+              </p>
+          {% endif %}
+      </div>
+
+
+    <!-- Chat Section -->
+    <div class="card card-left chat-container" style="max-width:100%;">
+      <h3>Case Chat</h3>
+      <div class="chat-box">
+        {% for msg in case.messages.all %}
+        <div class="{% if msg.sender == request.user %}text-end{% else %}text-start{% endif %}">
+          <div style="display: inline-block; background-color: {% if msg.sender == request.user %}#d1e7dd{% else %}#e2e3e5{% endif %}; padding: 10px 15px; border-radius: 10px; margin: 5px 0;">
+            {% if case.is_anonymous and msg.sender.groups.all.0.name != "handler" and not msg.sender.is_superuser %}
+              <strong>Anonymous</strong><br>
+            {% else %}
+              <strong>{{ msg.sender.username }}</strong><br>
+            {% endif %}
+            {% if msg.message %}
+              <span>{{ msg.message }}</span><br>
+            {% endif %}
+            {% if msg.file %}
+              <a href="{{ msg.file.url }}" target="_blank">{{ msg.file.name|cut:"chat_files/" }}</a><br>
+            {% endif %}
+          </div>
+          <small class="text-muted">{{ msg.timestamp|naturaltime}}</small>
+        </div>
+        {% empty %}
+        <p class="text-muted text-center">No messages yet.</p>
+        {% endfor %}
+      </div>
+      <!-- Send Message Form -->
+      <form method="post" enctype="multipart/form-data" id="message-form" class="chat-message-form">
+        {% csrf_token %}
+        <div class="chat-input-wrapper">
+          {{ message_form.message }}
+          <button type="submit" class="chat-send-btn" title="Send">
+            <i class="fa fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="chat-file-wrapper">
+          {{ message_form.file }}
+        </div>
+      </form>
+    </div>
+
+
+      <!-- Right: Case History -->
+      <div class="card card-right">
+          <h3>Case History</h3>
+          {% for record in history %}
+              <p>
+                  <strong>{{ record.action|safe}}</strong><br>
+                  By: {{ record.performed_by.username|default:"Anonymous" }}<br>
+                  On: {{ record.timestamp|date:"M d, Y H:i" }}
+              </p>
+          {% empty %}
+              <p>No history found.</p>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    const form = document.getElementById('message-form');
+    const messageInput = form.querySelector('textarea');  // assuming message is a textarea
+
+    messageInput.addEventListener('keydown', function(event) {
+        // Submit on Enter (but allow Shift+Enter for new line)
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            form.submit();
+        }
+    });
+</script>
+
+<script>
+    const chatBox = document.querySelector('.chat-box');
+
+    // Scroll to bottom on load
+    function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    scrollToBottom();
+
+    // Re-scroll to bottom after form submit
+    form.addEventListener('submit', function () {
+        setTimeout(scrollToBottom, 500); // Give server time to respond
+    });
+</script>
+
+
+<script>
+let lastMessageCount = document.querySelectorAll('.chat-box > div').length;
+
+setInterval(() => {
+    fetch('/cases/case/{{ case.id }}/get-messages/')
+    .then(res => res.json())
+    .then(data => {
+        const currentCount = data.messages.length;
+        if (currentCount > lastMessageCount) {
+            window.location.reload();  // New message received, reload the page
+        }
+    });
+}, 4000); // Check every 4 seconds
+</script>
+
+
+
+{% endblock %}

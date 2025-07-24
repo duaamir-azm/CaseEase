@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        margin: 0;
+        overflow-x: hidden;
+        font-family: Arial, sans-serif;
+    }
+
+    .home-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 20px;
+    }
+
+    .home-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 60px;
+        min-width: 300px;
+    }
+
+    .home-left h1 {
+        font-size: 40px;
+        color: #5b079c;
+        margin-bottom: 15px;
+    }
+
+    .home-left p {
+        font-size: 18px;
+        color: #333;
+        max-width: 600px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    .home-buttons a {
+        display: inline-block;
+        margin-right: 15px;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .login-btn {
+        background-color: #6A0DAD;
+        color: white;
+    }
+
+    .login-btn:hover {
+        background-color: #580b99;
+    }
+
+    .register-btn {
+        border: 2px solid #6A0DAD;
+        background-color: white;
+        color: #6A0DAD;
+    }
+
+    .register-btn:hover {
+        background-color: #f3eaff;
+    }
+
+    .home-right {
+        flex: 1;
+        min-width: 200px;
+        height: 400px;
+        background-image: url("{% static 'images/home_page.png' %}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-top: 50px;
+    }
+
+</style>
+
+
+<div class="home-container">
+
+    <!-- Left: Text + Buttons -->
+    <div class="home-left">
+        <h1>Welcome to CaseEase</h1>
+        <p>
+            A reliable, secure, and smart platform for managing legal, medical,
+            and investigative cases — for <strong>Admins</strong>, <strong>Handlers</strong>, and <strong>Users</strong> alike.
+        </p>
+
+        <div class="home-buttons">
+            <a href="{% url 'login' %}" class="login-btn">Login</a>
+            <a href="{% url 'register' %}" class="register-btn">Register</a>
+        </div>
+    </div>
+
+    <!-- Right: Image -->
+    <div class="home-right"></div>
+
+</div>
+
+<footer style="background: #6A0DAD; color: white; text-align: center; padding: 18px 0; width: 100%; font-size: 16px; box-shadow: 0 -2px 8px rgba(0,0,0,0.05); position: fixed; left: 0; bottom: 0; z-index: 1001;">
+    &copy; CaseEase. All rights reserved.
+</footer>
+
+
+{% endblock %}
