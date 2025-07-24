@@ -6,6 +6,8 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.LogoutUser, name='logout'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
+    path('unauthorized/', views.unauthorized, name='unauthorized'),
+
 
     # -------------------- Dashboards --------------------
     path('admin-dashboard/', views.AdminDashboardView.as_view(), name='admin_dashboard'),

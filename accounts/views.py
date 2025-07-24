@@ -44,6 +44,11 @@ def LogoutUser(request):
     return redirect('home')
 
 
+def unauthorized(request):
+    return render(request, 'accounts/unauthorized.html')
+
+
+
 class UserRegisterView(View):
     def get(self, request):
         form = UserRegisterForm()
