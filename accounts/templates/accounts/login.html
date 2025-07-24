@@ -59,10 +59,21 @@
     .login-container a:hover {
         text-decoration: underline;
     }
+    .errorlist {
+        background-color: #ffe6e6;
+        border: 1px solid #cc0000;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        color: #cc0000;
+    }
 </style>
 
 <div class="login-container">
     <h2>Login to CaseEase</h2>
+    {% if form.errors %}
+        {{error}}
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

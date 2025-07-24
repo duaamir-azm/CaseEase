@@ -69,10 +69,31 @@
     .register-container a:hover {
         text-decoration: underline;
     }
+    .errorlist {
+        background-color: #ffe6e6;
+        border: 1px solid #cc0000;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        color: #cc0000;
+    }
+
 </style>
 
 <div class="register-container">
     <h2>Create Your Account</h2>
+    {% if form.errors %}
+    <div class="errorlist">
+        <ul>
+        {% for field in form %}
+            {% for error in field.errors %}
+            <strong>{{ field.label }}:</strong> {{ error }}
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
