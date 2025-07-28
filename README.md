@@ -24,8 +24,8 @@ CaseEase is a Django-powered web application designed to streamline the case rep
 
 ### Clone the repository
 
-git clone https://github.com/duaamir-azm/CaseEase.git
-cd CaseEase
+- git clone https://github.com/duaamir-azm/CaseEase.git
+- cd CaseEase
 
 
 ## Install dependencies
@@ -35,6 +35,6 @@ pip install -r requirements.txt
 
 ## Apply migrations and runserver 
 
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
+- python manage.py makemigrations
+- python manage.py migrate
+- python manage.py runserver
