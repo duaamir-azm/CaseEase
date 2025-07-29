@@ -1,0 +1,7 @@
+# This tells Git to ignore .env, local database, and other unnecessary stuff.
+__pycache__/
+*.pyc
+.env
+db.sqlite3
+venv/
+staticfiles/
